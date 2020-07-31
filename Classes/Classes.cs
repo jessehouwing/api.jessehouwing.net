@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using Classes.ScrumOrg;
 
 namespace Classes
 {
@@ -117,98 +119,32 @@ namespace Classes
         }
 
 
-        private async Task<IEnumerable<Course>> GetCourses(int trainer, int[] courses)
+        private async Task<IEnumerable<Course>> GetCourses(int trainer, int[] courseIdentifiers)
         {
-            var classesUri = "https://www.scrum.org/classes"
-                .SetQueryParam("uid", trainer)
-                .SetQueryParam("country", "All");
+            var classesUri = "https://www.scrum.org/api/class-search";
 
-            if (courses.Any())
+            using (HttpClient client = new HttpClient())
             {
-                classesUri.SetQueryParam("type%5B%5D", courses);
-            }
-
-            HtmlWeb web = new HtmlWeb();
-            HtmlDocument doc = await web.LoadFromWebAsync(classesUri.ToUri().AbsoluteUri);
-            var courseElements = doc.DocumentNode.Descendants("article").Where(node => node.HasClass("coursefinder-course-row"));
-
-            return courseElements.Select(course => new Course
-            {
-                Name = GetLabelFromContent(course, "Type of Course"),
-                RegisterUri = GetButtonUriFromContent(course, "Register"),
-                Language = GetLabelFromContent(course, "Language"),
-                Location = GetLabelFromContent(course, "Location"),
-                Trainers = GetTrainersFromContent(course, "Taught By").ToArray(),
-                StartDate = GetDateFromContent(course, "Date", DateKind.Start),
-                EndDate = GetDateFromContent(course, "Date", DateKind.End)
-            });
-        }
-
-        private enum DateKind
-        {
-            Start, End
-        }
-
-        private DateTime? GetDateFromContent(HtmlNode course, string date, DateKind kind)
-        {
-            string text = GetLabelFromContent(course, date);
-
-            Match match = Regex.Match(text, @"(?<startmonth>\w+) (?<startday>\d+)-((?<endmonth>\w+) )?(?<endday>\d+), (?<year>\d{4})");
-
-            if (match.Success)
-            {
-                string day=string.Empty, month=string.Empty, year=string.Empty;
-
-                if (kind == DateKind.Start)
+                var result = await client.PostAsync(classesUri, JsonContent.Create(new
                 {
-                    day = match.Groups["startday"].Value;
-                    month = match.Groups["startmonth"].Value;
-                }
+                    courseTypes = courseIdentifiers,
+                    trainerId = trainer,
+                    countryCode = string.Empty
+                }));
 
-                if (kind == DateKind.End)
+                var courses = JsonConvert.DeserializeObject<Root>(await result.Content.ReadAsStringAsync());
+
+                return courses.items.Select(course => new Course
                 {
-                    day = match.Groups["endday"].Value;
-                    month = match.Groups["endmonth"].Success
-                        ? match.Groups["endmonth"].Value
-                        : match.Groups["startmonth"].Value;
-                }
-
-                year = match.Groups["year"].Value;
-
-                return DateTime.Parse($"{day} {month} {year}", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
-            }
-
-            return null;
-        }
-
-        private string GetLabelFromContent(HtmlNode node, string element)
-        {
-            var labelNode = node.Descendants("div").Single(label => label.HasClass("row-item-label") && label.InnerText.Equals(element));
-
-            var childrenExceptLabel = labelNode.ParentNode.ChildNodes.Except(new[]{labelNode});
-
-            var value = string.Join("", childrenExceptLabel.Select(child => child.InnerText.Trim()));
-
-            return value;
-        }
-
-        private Uri GetButtonUriFromContent(HtmlNode node, string element)
-        {
-            var href = node.Descendants("a").Single(a => a.HasClass("coursefinder-btn") && a.InnerText.Equals(element))
-                .Attributes["href"].Value;
-            return new Uri(href, UriKind.Absolute);
-        }
-
-        private IEnumerable<Trainer> GetTrainersFromContent(HtmlNode node, string element)
-        {
-            return node.Descendants("div")
-                .First(label => label.HasClass("row-item-label") && label.InnerText.Equals(element))
-                .ParentNode
-                .Descendants("a").Select(a => new Trainer
-                {
-                    Name = a.InnerText.Trim(),
-                    Uri = new Uri("https://www.scrum.org" + a.Attributes["href"].Value)
+                    Name = course.title,
+                    RegisterUri = new Uri(course.registrationUrl, UriKind.Absolute),
+                    Language = course.languages.First(),
+                    Location = course.location,
+                    Trainers = course.trainers.Select(t => { return new Trainer() { Name = t.name, Uri = "https://www.scrum.org/".AppendPathSegment(t.profileUrl).ToUri() }; }).ToArray(),
+                    StartDate = DateTime.Parse(course.startDate, CultureInfo.InvariantCulture),
+                    EndDate = DateTime.Parse(course.endDate, CultureInfo.InvariantCulture)
                 });
+            }
         }
 
         public struct Course
