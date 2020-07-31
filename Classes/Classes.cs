@@ -1,26 +1,21 @@
+using Classes.ScrumOrg;
+using Flurl;
+using Flurl.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Flurl;
-using Flurl.Http;
-using Flurl.Util;
-using HtmlAgilityPack;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Classes.ScrumOrg;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Classes
 {
