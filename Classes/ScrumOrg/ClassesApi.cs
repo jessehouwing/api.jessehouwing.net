@@ -1,52 +1,75 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Classes.ScrumOrg
 {
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     public class Trainer
     {
-        public string id { get; set; }
-        public string name { get; set; }
-        public string profileUrl { get; set; }
-        public string country { get; set; }
-        public string countryCode { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("profileUrl")]
+        public string ProfileUrl { get; set; }
+        [JsonProperty("country")]
+        public string Country { get; set; }
+        [JsonProperty("countryCode")]
+        public string CountryCode { get; set; }
     }
-
     public class PtnOrganization
     {
-        public string id { get; set; }
-        public string name { get; set; }
-        public string url { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("url")]
+        public string Url { get; set; }
     }
-
     public class Item
     {
-        public string id { get; set; }
-        public string title { get; set; }
-        public string url { get; set; }
-        public string logoUrl { get; set; }
-        public string deliveryMethod { get; set; }
-        public string location { get; set; }
-        public string countryCode { get; set; }
-        public string dateString { get; set; }
-        public string startDate { get; set; }
-        public string endDate { get; set; }
-        public bool registrationEnabled { get; set; }
-        public string registrationUrl { get; set; }
-        public List<string> languages { get; set; }
-        public List<Trainer> trainers { get; set; }
-        public PtnOrganization ptnOrganization { get; set; }
-        public string startEndTimes { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("title")]
+        public string Title { get; set; }
+        [JsonProperty("url")]
+        public string Url { get; set; }
+        [JsonProperty("logoUrl")]
+        public string LogoUrl { get; set; }
+        [JsonProperty("deliveryMethod")]
+        public string DeliveryMethod { get; set; }
+        [JsonProperty("location")]
+        public string Location { get; set; }
+        [JsonProperty("countryCode")]
+        public string CountryCode { get; set; }
+        [JsonProperty("dateString")]
+        public string DateString { get; set; }
+        [JsonProperty("startDate")]
+        public string StartDate { get; set; }
+        [JsonProperty("endDate")]
+        public string EndDate { get; set; }
+        [JsonProperty("registrationEnabled")]
+        public bool RegistrationEnabled { get; set; }
+        [JsonProperty("registrationUrl")]
+        public string RegistrationUrl { get; set; }
+        [JsonProperty("languages")]
+        public List<string> Languages { get; set; }
+        [JsonProperty("trainers")]
+        public List<Trainer> Trainers { get; set; }
+        [JsonProperty("ptnOrganization")]
+        public PtnOrganization PtnOrganization { get; set; }
+        [JsonProperty("startEndTimes")]
+        public string StartEndTimes { get; set; }
     }
-
     public class Root
     {
-        public List<Item> items { get; set; }
-        public int totalItems { get; set; }
-        public int page { get; set; }
+        [JsonProperty("items")]
+        public List<Item> Items { get; set; }
+        [JsonProperty("totalItems")]
+        public int TotalItems { get; set; }
+        [JsonProperty("page")]
+        public int Page { get; set; }
     }
-
-
 }

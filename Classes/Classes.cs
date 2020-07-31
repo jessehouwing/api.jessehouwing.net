@@ -134,15 +134,15 @@ namespace Classes
 
                 var courses = JsonConvert.DeserializeObject<Root>(await result.Content.ReadAsStringAsync());
 
-                return courses.items.Select(course => new Course
+                return courses.Items.Select(course => new Course
                 {
-                    Name = course.title,
-                    RegisterUri = new Uri(course.registrationUrl, UriKind.Absolute),
-                    Language = course.languages.First(),
-                    Location = course.location,
-                    Trainers = course.trainers.Select(t => { return new Trainer() { Name = t.name, Uri = "https://www.scrum.org/".AppendPathSegment(t.profileUrl).ToUri() }; }).ToArray(),
-                    StartDate = DateTime.Parse(course.startDate, CultureInfo.InvariantCulture),
-                    EndDate = DateTime.Parse(course.endDate, CultureInfo.InvariantCulture)
+                    Name = course.Title,
+                    RegisterUri = new Uri(course.RegistrationUrl, UriKind.Absolute),
+                    Language = course.Languages.First(),
+                    Location = course.Location,
+                    Trainers = course.Trainers.Select(t => { return new Trainer() { Name = t.Name, Uri = "https://www.scrum.org/".AppendPathSegment(t.ProfileUrl).ToUri() }; }).ToArray(),
+                    StartDate = DateTime.Parse(course.StartDate, CultureInfo.InvariantCulture),
+                    EndDate = DateTime.Parse(course.EndDate, CultureInfo.InvariantCulture)
                 });
             }
         }
