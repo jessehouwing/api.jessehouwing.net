@@ -31,7 +31,6 @@ namespace Classes
             210288, // Willem
             198095, // Just,
             303, // Robbin
-            175848, // Wilbert
         };
 
         private int[] allowedClasses = new[]
@@ -42,12 +41,11 @@ namespace Classes
             105, //PSPO
             106, //SPS
             130, //PALE
-            107, //PSD-NET
-            109, //PSD-JV
             108, //PSD-T
             133, //PSK
             200, //PSU,
             210, //PSPO-A
+            292, //PSFS
         };
 
         [FunctionName("QueryClasses")]
@@ -85,12 +83,13 @@ namespace Classes
                     for (var key in data)
                     {
                         table += '<tr>';
-                        table += '<td>' + new Date(data[key].StartDate).toLocaleDateString() + '</td>';
-                        table += '<td>' + new Date(data[key].EndDate).toLocaleDateString() + '</td>';
-                        table += '<td>' + data[key].Name + '</td>';
+                        table += '<td><a href=""' + data[key].RegisterUri + '"">Register...</a></td>';
+                        table += '<td><a href=""' + data[key].RegisterUri + '"">' + new Date(data[key].StartDate).toLocaleDateString() + '</a></td>';
+                        table += '<td><a href=""' + data[key].RegisterUri + '"">' + new Date(data[key].EndDate).toLocaleDateString() + '</a></td>';
+                        table += '<td><a href=""' + data[key].RegisterUri + '"">' + data[key].Name + '</a></td>';
                         table += '<td>' + data[key].Language + '</td>';
                         table += '<td>' + data[key].Location + '</td>';
-                        table += '<td><a href=""' + data[key].RegisterUri + '"">Register...</a></td>';
+                        
                         table += '</tr>';
                     }
                     table += '</tbody>';
