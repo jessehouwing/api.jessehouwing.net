@@ -78,7 +78,7 @@ namespace Classes
                 script += @"
                 $(document).ready(function() {
                     var table = '<table>';
-                    table += '<thead><tr><th>Start</th><th>End</th><th>Course</th><th>Language</th><th>Location</th><th></th></tr></thead>'
+                    table += '<thead><th></th><tr><th>Start</th><th>End</th><th>Course</th><th>Language</th><th>Location</th></tr></thead>'
                     table += '<tbody>'
                     for (var key in data)
                     {
